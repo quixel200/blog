@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>quixel</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+        <div id="container">
+                <div id="menu">
+                        <div class="site-title">quixel</div>
+                        <ul class="links">
+                                <li><b><a href="../index.html">Home</a></b></li>
+                                <li><b><a href="../resume.html">Resume</a></b></li>
+                                <li><b><a href="../projects.html">Projects</a></b></li>
+                                <li><b><a href="../writings.html">Writing</a></b></li>
+                                <li><b><a href="../writeups.html">CTF Write-ups</a></b></li>
+                        </ul>
+		</div>
+        <div class="content">
+            <h1>Student Management System(SMS)</h1>
+            <p>A full stack web app developed with HTML, Bootstrap, JavaScript, Jquery, PHP and MySQL designed to help faculty and students manage various academic and administrative activies.</p>
+            <p>Developed with the help of: </p>
+            <list>
+            <a href=""><li>Karthiban R</a>(our mentor and team lead)</li>
+            <a href=""><li>Kavinnandha</li></a>
+            <a href=""><li>Archana</li></a>
+            <a href=""><li>Keren</li></a>
+            <a href=""><li>Liyander Rishwanth</li></a>
+            <a href=""><li>Harish Kumar</li></a>
+            </list>
+            <p>The application will be primarily used for automating log generation and the attendance of each class.It also has many features such as requesting and approving leaves, a front-end for database upload and editing and dashboards for various roles. </p>
+            <p> I'll try to explain all the features that we worked on and the things we learned as we developed the app.</p>
+            <h2>Designing the database</h2>
+            <p>Here's the final ER diagram of the database that we developed:</p>
+            <img src="../images/sms/er_diagram.png">
+            <p>Most of the tables are self-explanatory except for the mapping ones. The <code>mapping_teacher_course</code> table lets the admin specify the teacher and the class taught by them along with the section. This is useful for the attendance.</p>
+            <p>the <code>mapping_course_department_batch</code> will be the table that is used to uniqely identify the course for each class even if the course is technically the same.What I mean by this is that if there's a course for Python, it's almost certain that it'll be taught in multiple departments. This table will help differentiate between them. </p>
+            <p>The <code>mapping_program_department</code> will be used to specify the programme(degree) for each department(such as BE,B.Tech).</p>
+            <p>Some of the tables were added as we were developing the app and explaining everything now will just confuse us without knowing the functionality of the app.</p>
+            <h2>GitHub</h2>
+            <p>Before we start, let me introduce you to our lord and saviour...GitHub.</p>
+            <p>We were six people working on different parts of the project seperately. Currently it consists of approximately 200 files, there's no way we could have managed all the files and integrated them together without using Git and GitHub. This project helped me realise just how valuable a distributed version control system is.
+            <h2>The Login Page</h2>
+            <p>We decided to have the same login page for both students and teachers.The students can login using their register number and teachers will use their email.With this constraint in place, we can just check if the username entered is a number, if it is, we can check the student table, otherwise we check the teacher table.</p>
+            <p>We also check if an active session exists, if it does, we just redirect them to their respective dashboard. Otherwise we set the session and redirect. </p>
+            <h2>Role based Dashboards</h2>
+            <p>Since an institute can have multiple roles such as Staff,Head of Department and Principal, We have structured the roles based on our college. The role is stored in the session and most roles have their seperate dashboard. We also check the role_id before rendering each page to ensure that no one tries to access the dashboard of a higher role directly through the url.</p>
+            <p>Here's what the Advisor dashboard looks like.</p>
+            <img src="../images/sms/advisor_dashboard.png">
+            <h2>The Attendance Page</h2>
+            <p>This was what we first worked on. The teachers can select the class and the student data for that class gets loaded dynamically using AJAX. This was my first time using ajax and loading content on the page without reloading it was quite fascinating.
+            <img src="../images/sms/attendance.png">
+            <h2>Database Upload Functionality</h2>
+            <p>We also worked on making a frontend for uploading,editing and deleting entries in the database without having to type queries. It also supports bulk uploads for easier upload of massive data.The insert functionalty was pretty easy to implement, just a form that sends a POST request to a php file that will upload the data.</p>
+            <img src="../images/sms/database_upload.png">
+            <p>The update and delete functionality were a bit trickier, I had to edit the table to have hidden input fields that store the id's of the fields and then use AJAX to dynamically select the data when a user clicks edit. Once the edit is done, instead of refreshing the page we used ajax to update the rows dynamically.</p>
+            <img src="../images/sms/database_update.png">
+		</div>
+	</div>
+</body>
+</html>
