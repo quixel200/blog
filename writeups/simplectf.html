@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>quixel</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+	<div id="container">
+		<div id="menu">
+			<div class="site-title">quixel</div>
+			<ul class="links">
+				<li><b><a href="../index.html">Home</a></b></li>
+				<li><b><a href="../resume.html">Resume</a></b></li>
+				<li><b><a href="../projects.html">Projects</a></b></li>
+				<li><b><a href="../writings.html">Writing</a></b></li>
+				<li><b><a href="../writeups.html">CTF Write-ups</a></b></li>
+			</ul>
+		</div>
+		<div class="content">
+			<h1>Simple CTF - TryHackMe</h1>
+            <h4>How many services are running under port 1000?</h5>
+            <p>To know what services are running on the ports, we can use nmap, a network mapping tool. heres the command I used:</p>
+            <code>$namp -sV -sC <ip> -p- -T4 </code>
+            <p>Heres what the command does</p>
+            <pre>
+                sV - probes for service and version info
+                sC - runs scripts against the port(default scripts)
+                -p- specifies to scan all the ports
+                T4 - makes the scan run faster taking less time
+            </pre>
+            <p>A scan of all the ports can take some time, so you can omit the -p- option for now.</p>
+            <image src="../images/simplectf/nmap_port_scan.png" style="width:80%;">
+            <p>We can see three ports open, 21,80 and 2222, but the question asks for ports under 1000, which is 2.</p>
+            <h4>What is running on the higher port?</h4>
+            <p>From the nmap scan we can see that ssh is running on the higher port.</p>
+            <h4>What's the CVE you're using against the application? </h4>
+            <p>In the nmap scan we can notice that the FTP server allows for anonymous logins, FTP allows for file sharing in a network, with anonymous logins, we can see the files without being a authorized user.</p>
+            <image src="../images/simplectf/ftplogin.png" style="width:70%;"></image>
+            <p>We can see a note left by someone, heres the contents of the file:</p>
+            <p>"Dammit man... you'te the worst dev i've seen. You set the same pass for the system user, and the password is so weak... i cracked it in seconds. Gosh... what a mess!"</p>
+            <p>This tells us that bruteforce is an option if we come across a hash or a login page</p>
+            <p>opening the webpage thats running on port 80, we can see the default apache2 homepage. In the Nmap scan, we can also see that it discovered robots.txt as a page we can visit, This was because we ran the default scripts on nmap. heres the line we're interested in:</p>
+            <pre>Disallow: /openemr-5_0_1_3 </pre>
+            <p>but when we visit the url, it doesn't exist and turns out to be a rabbit hole that leads us nowhere</p>
+            <p>After that I tried to search for hidden directories using ffuf and I found a hidden page</p>
+            <pre>
+            -w wordlist to use
+            -u url of the page (FUZZ specifies the place to substitute)
+            </pre>
+            <image src="../images/simplectf/directory.png" style="width:80%"></image>
+            <h4>to what kind of vulnerability is the application vulnerable?</h4>
+            <p>going to /simple, we see that its running something called "cms made simple", the important information is the version which is 2.2.8, googling for exploits we see that its vulnerable to a <a href="https://www.exploit-db.com/exploits/46635">SQL Injection(SQLi) attack.</a></p>
+            <p>I am going to use <a href="https://github.com/ELIZEUOPAIN/CVE-2019-9053-CMS-Made-Simple-2.2.10---SQL-Injection-Exploit">this</a> github repo code in order to perform the attack and get the credentials</p>
+    <pre>
+        python exploit.py -u http://ip/simple --crack -w best110.txt
+        [+] Salt for password found: 1dac0d********** 
+        [+] Username found: mitch 
+        [+] Email found: admin@admin.com
+        [+] Password found: 0c01d4468b**************** 
+        [+] Password cracked: ****** 
+    </pre>
+    <h4>Where can login with the details obtained?</h4>
+    <p>We can now use the credentials we just cracked to log into ssh,this is a common example of re-using the same credentials for everything.</p>
+    <code>ssh mitch@ip -p 2222 </code>
+    <h4>What's the user flag?</h4>
+    <p>The user flag can be found in the user's home directory</p>
+    <code>cat user.txt</code>
+    <h4>Is there any other user in the home directory? What's its name?</h4>
+    <p>going to /home, we see another user by the name of subath</p>
+    <h4>What can you leverage to spawn a privileged shell?</h4>
+    <p>Checking what commands we can run as root on the server, we can see vim which can be run as root with no password.</p>
+    <pre>
+    $ sudo -l
+    User mitch may run the following commands on Machine:
+    (root) NOPASSWD: /usr/bin/vim
+    </pre>
+    <h4>What's the root flag?</h4>
+    <p>To escalate out privilages to root, we can check GTFObins and search for vim. We can easily spawn a root shell by following the instructions provided on <a href="https://gtfobins.github.io/gtfobins/vim/">their page</a>, its a simple command</p>
+    <code>sudo vim -c ':!/bin/sh'</code>
+    <p>once we're root, we can find the root flag in the root user's home directory</p>
+    <image src="../images/simplectf/root.png" style="width:60%"></image>
+	</div>
+</body>
+</html>
+
+
