@@ -86,3 +86,9 @@ code{
     border-radius: 0.5em;
     border:  solid grey 1px;
 }
+
+blockquote{
+    margin:2em 0;
+    padding:1em 1.5em;
+    border-left: 1px solid green;
+}

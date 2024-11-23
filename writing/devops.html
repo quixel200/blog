@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>quixel</title>
+    <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+        <div id="container">
+                <div id="menu">
+                        <div class="site-title">quixel</div>
+                        <ul class="links">
+                                <li><b><a href="../index.html">Home</a></b></li>
+                                <li><b><a href="../resume.html">Resume</a></b></li>
+                                <li><b><a href="../projects.html">Projects</a></b></li>
+                                <li><b><a href="../writings.html">Writing</a></b></li>
+                                <li><b><a href="../writeups.html">CTF Write-ups</a></b></li>
+                        </ul>
+		</div>
+        <div class="content">
+            <h1>What even is DevOps?</h1>
+            <p>The definition of Development Operations is quite vague and I have seen many definitions of it.But the definition I like the most is from redhat:</p>
+            <blockquote><span>DevOps describes approaches to speeding up the processes by which an idea (like a new software feature, a request for enhancement, or a bug fix) goes from development to deployment in a production environment where it can provide value to the user.</span></blockquote>
+            <p>DevOps involves automating parts of the SDLC and ensuring that a service is available to the user(on the deployment server) as soon as the code is ready(on the development server).</p>
+            <h1>AWS</h1>
+            <p>Amazon Web Services is a cloud computing and infrastructure as a service platform where you can use their services and products. They offer a wide variety of services but the one's we're interested in for now are EC2(Elasic Cloud Compute),IAM(Identity and Access Management),ECS(Elastic Container Service),EKS(Elastic Kubernetes Service) and S3 buckets.</p>
+            <h2>Elastic Cloud Compute(EC2)</h2>
+            <center><img src="../images/DevOps/ec2-instances.png" style="width:40%;"></img></center>
+            <p>EC2 provides on-demand 'instances' which are virtual servers running on the AWS Cloud. Using EC2 instances allows you to deploy multiple machines on the cloud saving you hardware costs,however you still have to pay for the resouces and time that you used for the instances.As a new user you should have some free tier options, so I would recommend using those.Most of the services of AWS are built upon or use EC2.</p>
+            <h1>Running a webserver</h1>
+            <p>A webserver is a server that request to http requests and serves a page to the user, like the one that's hosting this blog.There are a lot of open source web servers out there like apache,tomcat and nginx. You can even host one locally if you want! For now you can launch an EC2 instance, install nginx, and then open the public IP on a web browser to see your webserver in action(oh and make sure that you edit inbound rules to allow traffic for port 80).</p>
+            <p>Heres a tutorial for setting up nginx if you need extra help <a href="https://ubuntu.com/tutorials/install-and-configure-nginx#1-overview">https://ubuntu.com/tutorials/install-and-configure-nginx#1-overview</a></p>
+            <p>Google around and try to deploy a tomcat server, the default port for tomcat is 8080.</p>
+            <h1>Deploying using jenkins</h1>
+            <p>We know how webservers work and how to deploy to them. You've been editing the source code file directly on the server. But consider an organisation, where there's hundreds or even thousands of people working on the project, giving direct access to the server is definitely not a good idea and no one wants to add code only to find out that it broke the server.</p>
+            <p>one solution to this problem is to use an SCM like Git that allows multiple people to work on the project, and then clone it onto the production server,but if it's something like a java applet that requires compilation, we would have to manually compile it everytime new code gets added.</p>
+            <p>Here's where jenkins comes in, we can create a pipeline that automatically does all of this for us! Once we push our code to github,jenkins can automatically check the repo and pull the new pages,build the application,test it and then deploy it to the server.</p>
+            <center><img src="../images/DevOps/jenkins.png" style="width:50%"></img></center>
+            <h1>Docker</h1>
+            <p>Have you ever downloaded an application for it to not work because of missing files or version conflicts or dependancies? Docker helps solve the problem by running your software in packages called containers.It's very similar to a hypervisor except much more light-weight and has more features.</p>
+            <center><img src="../images/DevOps/docker.jpg" style="width:60%"></img></center>
+            <p>You can build applications and store them in docker images, which can then be stored in a repository like dockerhub where others can pull your images and use them. By deploying your application through docker you don't have to worry about dependancies or OS conflicts as everything is packaged into the container.</p>
+            <p>Once docker is installed you can pull an image using <code>docker pull image:tag</code> </p>
+            <p>To run the container you can use <code>docker run image:tag</code></p>
+            <p>heres are some useful tags when running docker containers:</p>
+            <pre>
+                -d = detachable mode, runs the container in the background
+                -i = interactive, allows you to interact with the container
+                -t = allows you use a terminal 
+                -p = port forwarding, exposes the application the your network
+            </pre>
+            <h1>Kubernetes</h1>
+            Kubernetes is a container orchestration software that allows you to deploy,scale and manage your containers. When an application is deployed, a time may come when the number of servers needs to be increased or decreased based on the traffic that it's recieving. You will also need to create a new container if the one that is running goes now. Kubernetes helps by taking care of scaling and failover for the application.
+            <center><img src="../images/DevOps/k8s.svg"></img></center>
+            <h1>Terraform</h1>
+            <p>Normally to deploy an application on a cluster like kubernetes, you would have to follow a tedious process of creating roles for allowing access to the cluster, configure your cli to communicate with the provider, launch multiple instances etc.</p>
+            <p>terraform makes these tasks trivial by providing a serive known as Infrastructure as Code. With the help of terraform, you only need to specify the provider(AWS in our case) and the resouces that need to be created in a .tf file. Terraform will then create all the resources such as instances for you</p>
+            <img src="../images/DevOps/terraform.avif"></img>
+            <p>When you destroy a terraform instance all the resources that get created also get destroyed saving you the time of having to manually terminate each one</p>
+        <p>This is an comprehensive introduction of all the things that I learnt in DevOps and I will update this artice as time goes! Thank you for reading the whole thing and I hope you learnt something new.</p>
+		</div>
+	</div>
+</body>
+</html>
